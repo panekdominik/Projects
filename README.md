@@ -6,7 +6,7 @@ The first part of this code (still under development) takes as an input grayscal
 The second part of this code (still under development) is supposed to take as an input masks (found in the first part), label them with integer numbers and use machine learning models (the ones with "fit", and "predict" methods) and tries to identify the objects visible at the tomographic images. 
 
 Functions used for segmentation:
-1) **image_show(image, nrows=1, ncols=1, cmap='gray', **kwargs)** takes an image as an input and shows it in the grayscale 
+1) **image_show(image, nrows=1, ncols=1, cmap='gray', kwargs)** takes an image as an input and shows it in the grayscale 
 2) **window_image(image, window_center, window_width)** takes an image as an input and returns the windowed images (based on the window center and width)
 3) **remove_noise(image, window_center, window_width)** takes an image as an input and returns denised image (image withoud single pixel speckles)
 4) **contour_distance(contour)** takes a list of contours as an input and checks the Euclidian distance between the first and the last point of a given contour
