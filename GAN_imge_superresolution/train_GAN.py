@@ -14,7 +14,9 @@ parser.add_argument("--saving_dir", type=str, help="Directory where the model wi
 parser.add_argument("--image_width", type=int, help="Width of the image")
 parser.add_argument("--image_height", type=int, help="Height of the image")
 parser.add_argument("--epochs", type=int, default=10000, help="Number of iterations the model will run for")
-parser.add_argument("--loss_weights", type=list, help="Weigths given to the loss metrics (BCE, MSE and SSIM)")
+parser.add_argument("--BCE_weight", type=float, help="Weigths given to the BCE loss")
+parser.add_argument("--MSE_weight", type=float, help="Weigths given to the MSE loss)")
+parser.add_argument("--SSIM_weight", type=float, help="Weigths given to the SSIM loss")
 parser.add_argument("--model_weights", type=str, help="Model weigths imported from .h5 file")
 
 args = parser.parse_args()
@@ -24,7 +26,9 @@ saving_dir = args.saving_dir
 img_width = args.image_width
 img_height = args.image_height
 epochs = args.epochs
-loss_weights = args.loss_weights
+BCE_loss = args.BCE_weight
+MSE_loss = args.MSE_weight
+SSIM_loss = args.SSIM_weight
 model_weights = args.model_weights
 
 def train_GAN(d_model, g_model, gan_model, data, save_path, epochs = 300, n_batch = 1, model_weights=None):
@@ -94,8 +98,11 @@ def train_GAN(d_model, g_model, gan_model, data, save_path, epochs = 300, n_batc
 
 ### load data
 fluo_images, conf_images = data_loader(lr_path=lr_dir, hr_path=hr_dir, img_width=img_width, img_height=img_height)
-img_shape = fluo_images[1:]
+img_shape = fluo_images.shape[1:]
 data = [conf_images, fluo_images]
+loss_weights = [BCE_loss, MSE_loss, SSIM_loss]
+
+print(img_shape)
 
 ### define models
 d_model = define_discriminator(image_shape=img_shape)
