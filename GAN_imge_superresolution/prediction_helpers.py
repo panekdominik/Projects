@@ -10,13 +10,14 @@ def image_loader(random_sample, hr_images, lr_images):
         fluo_image = lr_images[ix]
         print("Image number:", ix)
     else:
-        conf_image = hr_images[[random_sample]]
-        fluo_image = lr_images[[random_sample]]
-        print("Image number:", random_sample)
+        ix = random_sample
+        conf_image = hr_images[[ix]]
+        fluo_image = lr_images[[ix]]
+        print("Image number:", [random_sample])
 
     return fluo_image, conf_image
 
-def plot_samples(hr_image, lr_image, model, saving_dir):
+def plot_samples(hr_image, lr_image, model, saving_dir, random_sample):
     
     fig, ax = plt.subplots(1, 3, figsize=(16,5))
     ax[0].imshow(hr_image[0])
@@ -26,10 +27,10 @@ def plot_samples(hr_image, lr_image, model, saving_dir):
     ax[2].imshow(model[0])
     ax[2].set_title("Generated image", fontsize=15)
     plt.tight_layout()
-    plt.savefig(saving_dir+'/generated_images.png', dpi=600)
+    plt.savefig(saving_dir+'/generated_images_{}.png'.format(random_sample), dpi=600)
     plt.show()
 
-def plot_corss_section(hr_image, lr_image, model, saving_dir, pixel):
+def plot_corss_section(hr_image, lr_image, model, saving_dir, pixel, random_sample):
 
     generated = np.clip(model[0], a_min=0, a_max=1)
     fig, ax = plt.subplots(1, 3, figsize=(16, 5), sharey=True)
@@ -43,7 +44,7 @@ def plot_corss_section(hr_image, lr_image, model, saving_dir, pixel):
     ax[1].set_xlabel('Pixel number')
     ax[0].set_ylabel('Normalized intensity')
     plt.tight_layout()
-    plt.savefig(saving_dir+'/cross_section_{}.png'.format(pixel), dpi=600, transparent=True)
+    plt.savefig(saving_dir+'/cross_section_{}_{}.png'.format(random_sample, pixel), dpi=600, transparent=True)
     plt.show()
 
 def calculate_metrics(hr_image, model):

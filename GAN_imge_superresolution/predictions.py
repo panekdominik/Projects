@@ -5,7 +5,9 @@ from data_loader import data_loader
 import argparse
 import matplotlib.pyplot as plt
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(prog="Predictions",
+                                 description="This script allows to see the results of a trained GAN model. It produces a plot showing three images, HR, LR and generated (based on LR). It also shows the corss-section through given image slice allowing to compare detailedness. It also shows the metrics like MSE, NRMSE, PSNR, and SSIM allowing to comapre HR and generated images quantitively.",
+                                 epilog="To learn more go to: https://github.com/panekdominik/PhD_projects/tree/main/GAN_imge_superresolution or read README file.")
 parser.add_argument("--lr_dir", type=str, help="Directory where the low-resolution images are stored")
 parser.add_argument("--hr_dir", type=str, help="Directory where the high-resolution images are stored")
 parser.add_argument("--saving_dir", type=str, help="Directory where the image will be saved")
@@ -36,10 +38,10 @@ GAN_model = load_model(model_path, compile=False)
 GAN = GAN_model.predict(fluo_image)
 
 # Plotting exemplary samples
-plot_samples(hr_image=conf_image, lr_image=fluo_image, model=GAN, saving_dir=saving_dir)
+plot_samples(hr_image=conf_image, lr_image=fluo_image, model=GAN, saving_dir=saving_dir, random_sample=random_sample)
 
 # Plotting cross section along y-axis through the images
-plot_corss_section(hr_image=conf_image, lr_image=fluo_image, model=GAN, saving_dir=saving_dir, pixel=pixel)
+plot_corss_section(hr_image=conf_image, lr_image=fluo_image, model=GAN, saving_dir=saving_dir, pixel=pixel, random_sample=random_sample)
 
 # Calculating some metrics between hr and generated imge
 calculate_metrics(hr_image=conf_image, model=GAN)

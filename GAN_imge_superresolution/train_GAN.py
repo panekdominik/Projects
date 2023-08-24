@@ -7,17 +7,19 @@ import argparse
 from models import define_discriminator, define_generator, define_gan
 from data_loader import data_loader
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--lr_dir", type=str, help="Directory where the low-resolution images are stored")
-parser.add_argument("--hr_dir", type=str, help="Directory where the high-resolution images are stored")
-parser.add_argument("--saving_dir", type=str, help="Directory where the model will be saved")
-parser.add_argument("--image_width", type=int, help="Width of the image")
-parser.add_argument("--image_height", type=int, help="Height of the image")
-parser.add_argument("--epochs", type=int, default=10000, help="Number of iterations the model will run for")
-parser.add_argument("--BCE_weight", type=float, help="Weigths given to the BCE loss")
-parser.add_argument("--MSE_weight", type=float, help="Weigths given to the MSE loss)")
-parser.add_argument("--SSIM_weight", type=float, help="Weigths given to the SSIM loss")
-parser.add_argument("--model_weights", type=str, default=None, help="Model weigths imported from .h5 file")
+parser = argparse.ArgumentParser(prog="GAN training script",
+                                 description="This script allows to train the GAN network based on the low-resolution (LR) images to obtain high-resolution (HR) images. It uses a discriminator (trained on generated and HR images) which is train adversariarly against the generator, which takes as an input LR imgage.",
+                                 epilog="To learn more go to: https://github.com/panekdominik/PhD_projects/tree/main/GAN_imge_superresolution or read README file.")
+parser.add_argument("--lr_dir", "-lr", type=str, help="Directory where the low-resolution images are stored")
+parser.add_argument("--hr_dir", "-hr", type=str, help="Directory where the high-resolution images are stored")
+parser.add_argument("--saving_dir", "-s", type=str, help="Directory where the model will be saved")
+parser.add_argument("--image_width", "-W", type=int, help="Width of the image")
+parser.add_argument("--image_height", "-H", type=int, help="Height of the image")
+parser.add_argument("--epochs", "-e", type=int, default=10000, help="Number of iterations the model will run for")
+parser.add_argument("--BCE_weight", "-BCE", type=float, help="Weigths given to the BCE loss")
+parser.add_argument("--MSE_weight", "-MSE", type=float, help="Weigths given to the MSE loss)")
+parser.add_argument("--SSIM_weight", "-SSIM", type=float, help="Weigths given to the SSIM loss")
+parser.add_argument("--model_weights", "-mw", type=str, default=None, help="Model weigths imported from .h5 file")
 
 args = parser.parse_args()
 lr_dir = args.lr_dir
