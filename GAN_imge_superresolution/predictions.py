@@ -2,6 +2,7 @@ from keras.models import load_model
 from cycler import cycler
 from prediction_helpers import image_loader, plot_samples, plot_corss_section, calculate_metrics
 from data_loader import data_loader
+from csv_saver import convert_tensor_events_to_csv
 import argparse
 import matplotlib.pyplot as plt
 
@@ -16,6 +17,11 @@ parser.add_argument("--image_height", type=int, help="Height of the image")
 parser.add_argument("--random", type=int, default=-1, help="If no integer is specified random image is taken if number is specified image with given id is taken")
 parser.add_argument("--model_path", type=str, help="Path to the model file (make super model is compatible with data)")
 parser.add_argument("--pixel_number", type=int, default=-1, help="Number indicating the slice in y direction across which the plot will be made")
+parser.add_argument("--tensorflow_data", type=str, default=None, help="Path to a tensorflow file sontaining losses saved during training.")
+parser.add_argument("--csv", type=str, default=None, help="Name of the csv file to be created from the tensorflow log")
+parser.add_argument("--disc_real_loss", type=str, default=None, help="Name of the value in the log to be saved in csv file")
+parser.add_argument("--disc_fake_loss", type=str, default=None, help="Name of the value in the log to be saved in csv file")
+parser.add_argument("--gen_loss", type=str, default=None, help="Name of the value in the log to be saved in csv file")
 
 args = parser.parse_args()
 lr_dir = args.lr_dir
@@ -26,6 +32,11 @@ img_height = args.image_height
 random_sample = args.random
 model_path = args.model_path
 pixel = args.pixel_number
+tensorflow_data = args.tensorflow_data
+csv = args.csv
+disc_real_loss = args.disc_real_loss
+disc_fake_loss = args.disc_fake_loss
+gen_loss = args.gen_loss
 
 plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b'])))
 
@@ -45,3 +56,12 @@ plot_corss_section(hr_image=conf_image, lr_image=fluo_image, model=GAN, saving_d
 
 # Calculating some metrics between hr and generated imge
 calculate_metrics(hr_image=conf_image, model=GAN)
+
+# Saving model losses to csv file 
+if tensorflow_data != None:
+    if disc_real_loss != None:
+        convert_tensor_events_to_csv(log_dir=tensorflow_data, tensor_tag=disc_real_loss, csv_output_filename=csv, header=disc_real_loss)
+    if disc_fake_loss != None:
+        convert_tensor_events_to_csv(log_dir=tensorflow_data, tensor_tag=disc_fake_loss, csv_output_filename=csv, header=disc_fake_loss)
+    if gen_loss != None:
+        convert_tensor_events_to_csv(log_dir=tensorflow_data, tensor_tag=gen_loss, csv_output_filename=csv, header=gen_loss)
