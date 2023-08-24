@@ -5,7 +5,7 @@ from skimage.metrics import mean_squared_error, normalized_root_mse, peak_signal
 
 def image_loader(random_sample, hr_images, lr_images):
     if random_sample == -1:
-        ix = randint(0, len(lr_images)+1, 1)
+        ix = randint(0, len(lr_images), 1)
         conf_image = hr_images[ix]
         fluo_image = lr_images[ix]
         print("Image number:", ix)
