@@ -1,5 +1,6 @@
 import csv
 import tensorflow as tf
+from tensorboard.backend.event_processing import event_accumulator
 
 def save_tensor_to_csv(tensor_data, csv_filename, header):
     with open(csv_filename, 'w', newline='') as csvfile:
@@ -22,3 +23,13 @@ def convert_tensor_events_to_csv(log_dir, tensor_tag, csv_output_filename, heade
 
     save_tensor_to_csv(tensor_data, csv_output_filename, header=header)
     print(f'Tensor data exported to CSV file: {csv_output_filename}')
+
+def return_tags(tensor_data):
+
+    ea = event_accumulator.EventAccumulator(tensor_data)
+    ea.Reload()
+    events = []
+    for tensor_event in ea.Tags()['tensors']:
+        events.append(tensor_event)
+        
+    print("Losses recorded during training: ", events)

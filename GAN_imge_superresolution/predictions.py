@@ -2,7 +2,7 @@ from keras.models import load_model
 from cycler import cycler
 from prediction_helpers import image_loader, plot_samples, plot_corss_section, calculate_metrics
 from data_loader import data_loader
-from csv_saver import convert_tensor_events_to_csv
+from csv_saver import convert_tensor_events_to_csv, return_tags
 import argparse
 import matplotlib.pyplot as plt
 
@@ -18,10 +18,11 @@ parser.add_argument("--random", type=int, default=-1, help="If no integer is spe
 parser.add_argument("--model_path", type=str, help="Path to the model file (make super model is compatible with data)")
 parser.add_argument("--pixel_number", type=int, default=-1, help="Number indicating the slice in y direction across which the plot will be made")
 parser.add_argument("--tensorflow_data", type=str, default=None, help="Path to a tensorflow file sontaining losses saved during training.")
+parser.add_argument("--log", type=str, default=None, help="Name of the moels stored ine the tensorflow log. These names may be necessary to recover csv version of tensorflow file.")
 parser.add_argument("--csv", type=str, default=None, help="Name of the csv file to be created from the tensorflow log")
-parser.add_argument("--disc_real_loss", type=str, default=None, help="Name of the value in the log to be saved in csv file")
-parser.add_argument("--disc_fake_loss", type=str, default=None, help="Name of the value in the log to be saved in csv file")
-parser.add_argument("--gen_loss", type=str, default=None, help="Name of the value in the log to be saved in csv file")
+parser.add_argument("--disc_real_loss", type=str, default=None, help="Name of the discriminator real loss value in the log to be saved in csv file. If you dont know the name of the moddel loss stored in the tensorflow log run --logs command")
+parser.add_argument("--disc_fake_loss", type=str, default=None, help="Name of the discriminator fake loss value in the log to be saved in csv file")
+parser.add_argument("--gen_loss", type=str, default=None, help="Name of the generator value in the log to be saved in csv file")
 
 args = parser.parse_args()
 lr_dir = args.lr_dir
@@ -33,6 +34,7 @@ random_sample = args.random
 model_path = args.model_path
 pixel = args.pixel_number
 tensorflow_data = args.tensorflow_data
+logs = args.log
 csv = args.csv
 disc_real_loss = args.disc_real_loss
 disc_fake_loss = args.disc_fake_loss
@@ -56,6 +58,10 @@ plot_corss_section(hr_image=conf_image, lr_image=fluo_image, model=GAN, saving_d
 
 # Calculating some metrics between hr and generated imge
 calculate_metrics(hr_image=conf_image, model=GAN)
+
+# Get names of the logs in tensorflow 
+if logs != None:
+    return_tags(tensor_data=logs)
 
 # Saving model losses to csv file 
 if tensorflow_data != None:
