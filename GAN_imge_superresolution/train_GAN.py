@@ -17,7 +17,7 @@ parser.add_argument("--epochs", type=int, default=10000, help="Number of iterati
 parser.add_argument("--BCE_weight", type=float, help="Weigths given to the BCE loss")
 parser.add_argument("--MSE_weight", type=float, help="Weigths given to the MSE loss)")
 parser.add_argument("--SSIM_weight", type=float, help="Weigths given to the SSIM loss")
-parser.add_argument("--model_weights", type=str, help="Model weigths imported from .h5 file")
+parser.add_argument("--model_weights", type=str, default=None, help="Model weigths imported from .h5 file")
 
 args = parser.parse_args()
 lr_dir = args.lr_dir
