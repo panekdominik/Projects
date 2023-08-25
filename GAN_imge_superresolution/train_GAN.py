@@ -51,7 +51,7 @@ def train_GAN(d_model, g_model, gan_model, data, save_path, epochs = 300, n_batc
     lr_controller_g.on_epoch_begin(epoch=1)
     lr_controller_d.on_epoch_begin(epoch=1)
 
-    if model_weights:
+    if model_weights != None:
         g_model.load_weights(model_weights)
 
     summary_writer = tf.summary.create_file_writer(save_path + 'logs')
