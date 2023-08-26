@@ -2,7 +2,7 @@ from tensorflow.keras.callbacks import ReduceLROnPlateau
 import tensorflow as tf
 from datetime import datetime
 from helpers import generate_real_samples, generate_fake_samples, generate_validation_samples
-from validation import calculate_validation_loss
+from validation import calculate_validation_loss, calculate_validation_metrics
 import argparse
 from models import define_discriminator, define_generator, define_gan
 from data_loader import data_loader
@@ -43,6 +43,10 @@ def train_GAN(d_model, g_model, gan_model, data, save_path, epochs = 300, n_batc
 
     n_steps = batches_per_epoch * epochs
     best_val_loss = float('inf')
+    best_metrics = {
+        'ssim': -1,
+        'psnr': -float('inf')
+        }
 
     lr_controller_g = ReduceLROnPlateau(model=gan_model, factor=0.5, patience=10, mode='min', min_delta=1e-4,
                                     cooldown=0, min_lr=1e-4 * 0.1, verbose=1)
@@ -77,11 +81,17 @@ def train_GAN(d_model, g_model, gan_model, data, save_path, epochs = 300, n_batc
             g_model.save(save_path+'UNET_GAN_model6_Adv1_MSE001_SSIM01_epoch_{}.h5'.format(i))
 
         val_data = generate_validation_samples(data, n_samples=8)
-        val_losses = calculate_validation_loss(g_model, d_model, val_data)
+        
+        val_metrics = calculate_validation_metrics(gen_model=g_model, val_data=val_data)
+        if val_metrics['ssim'] > best_metrics['ssim'] and val_metrics['psnr'] > best_metrics['psnr']:
+            best_metrics = val_metrics
+            g_model.save(save_path + 'best_model_based_on_metrics{}.h5'.format(i))
+
+        val_losses = calculate_validation_loss(gen_model=g_model, disc_model=d_model, val_data=val_data)
         val_loss = val_losses.mean()
         if val_loss < best_val_loss:
           best_val_loss = val_loss
-          g_model.save(save_path + 'best_model_{}.h5'.format(i))
+          g_model.save(save_path + 'best_model_based_on_loss{}.h5'.format(i))
 
         print('Step: {}, Discriminator losses: D1 {}, D2 {}, Generator loss: G {}'.format(i+1,
                                                                                           round(disc_loss1[0], 8),
@@ -96,15 +106,13 @@ def train_GAN(d_model, g_model, gan_model, data, save_path, epochs = 300, n_batc
     execution_time = stop1-start1
     print("Execution time is: ", execution_time)
 
-    return best_val_loss
+    return best_val_loss, best_metrics
 
 ### load data
 fluo_images, conf_images = data_loader(lr_path=lr_dir, hr_path=hr_dir, img_width=img_width, img_height=img_height)
 img_shape = fluo_images.shape[1:]
 data = [conf_images, fluo_images]
 loss_weights = [BCE_loss, MSE_loss, SSIM_loss]
-
-print(img_shape)
 
 ### define models
 d_model = define_discriminator(image_shape=img_shape)
