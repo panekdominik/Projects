@@ -16,14 +16,14 @@ parser = argparse.ArgumentParser(prog="Cell shape classification script",
 
 parser.add_argument("--image_width", "-W", type=int, help="Width of the image.")
 parser.add_argument("--image_height", "-H", type=int, help="Height of the image.")
-parser.add_argument("--channels", "-C", type=int, default=1, help="Number of channels in an image.")
+parser.add_argument("--channels", "-C", type=int, default=1, help="Number of channels in an image. Default 1.")
 parser.add_argument("--labels_path", "-LP", type=str, help="Path to the file containing labels.")
-parser.add_argument("--epochs", "-E", type=int, default=250, help="Number of iterations the model will run for.")
-parser.add_argument("--batch_size", "-BS", type=int, default=8, help="Number of images in one batch.")
-parser.add_argument("--learning_rate", "-LR", type=float, default=1e-5, help="Starting learning rate of learning.")
+parser.add_argument("--epochs", "-E", type=int, default=250, help="Number of iterations the model will run for. Default 250.")
+parser.add_argument("--batch_size", "-BS", type=int, default=8, help="Number of images in one batch. Default 8.")
+parser.add_argument("--learning_rate", "-LR", type=float, default=1e-5, help="Starting learning rate of learning. Default 1e-5.")
 parser.add_argument("--model_save_path", "-MS", type=str, help="Path where the model will be saved.")
 parser.add_argument("--logger_save_path", "-LS", type=str, help="Path where model performance will be saved.")
-parser.add_argument("--cell_names", "-CN", type=str, default='Mesenchymal,Polygonal,Pseudopodial,Blebbing,Other', help="Name of the samples (given as delimited list).")
+parser.add_argument("--cell_names", "-CN", type=str, default='Mesenchymal,Polygonal,Pseudopodial,Blebbing,Other', help="Name of the samples (given as delimited list). Default: Mesenchymal,Polygonal,Pseudopodial,Blebbing,Other")
 parser.add_argument("--validation", "-V", type=bool, default=False, help="Default False. If true then ids of missclassified cells are returned")
 
 
