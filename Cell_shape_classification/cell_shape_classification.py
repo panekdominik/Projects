@@ -17,6 +17,8 @@ parser.add_argument("--labels_path", "-LP", type=str, help="Path to the file con
 parser.add_argument("--epochs", "-E", type=int, default=250, help="Number of iterations the model will run for. Default 250.")
 parser.add_argument("--batch_size", "-BS", type=int, default=8, help="Number of images in one batch. Default 8.")
 parser.add_argument("--learning_rate", "-LR", type=float, default=1e-5, help="Starting learning rate of learning. Default 1e-5.")
+parser.add_argument("--kernel_size", "-KS", type=int, default=3, help="Size of the kernel in the convolutional block. Default value is 3 (matrix size 3x3).")
+parser.add_argument("--blocks", "-B", type=int, default=2, help="Number of convolutional blocks in the model. Default value is 2.")
 parser.add_argument("--model_save_path", "-MS", type=str, help="Path where the model will be saved.")
 parser.add_argument("--logger_save_path", "-LS", type=str, help="Path where model performance will be saved.")
 parser.add_argument("--cell_names", "-CN", type=str, default='Mesenchymal,Polygonal,Pseudopodial,Blebbing,Other', help="Name of the samples (given as delimited list). Default: Mesenchymal,Polygonal,Pseudopodial,Blebbing,Other")
@@ -31,6 +33,8 @@ labels_path = args.labels_path
 n_epochs = args.epochs
 batch_size = args.batch_size
 lr = args.learning_rate
+kernel_size = args.kernel_size
+blocks = args.blocks
 save_path = args.model_save_path
 log_path = args.logger_save_path
 names = args.cell_names
@@ -52,7 +56,7 @@ X_train, X_test, y_train, y_test = train_test_split(image_data, labels, test_siz
 print('Training shape:', X_train.shape, '\n','Testing shape:', X_test.shape)
 
 # defining model and callbacks
-model = model(image_width=image_width, image_height=image_height, n_channels=n_channels, kernel=(3, 3), blocks=2, lr=lr)
+model = model(image_width=image_width, image_height=image_height, n_channels=n_channels, kernel=(kernel_size, kernel_size), blocks=blocks, lr=lr)
 callback = callbacks(model_save=save_path, performance_save=log_path)
 
 # train the model
