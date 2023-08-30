@@ -1,10 +1,6 @@
 from helpers import read_data_dir, img_reader, labels_reader
-import numpy as np
-import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from model import model, callbacks
-import seaborn as sns
-import pandas as pd
 from model_summary import model_performnace, model_evaluation, model_metrics
 from validation import model_validation
 import argparse
@@ -60,7 +56,11 @@ model = model(image_width=image_width, image_height=image_height, n_channels=n_c
 callback = callbacks(model_save=save_path, performance_save=log_path)
 
 # train the model
+start = datetime.now()
 model.fit(X_train, y_train, epochs=n_epochs, batch_size=batch_size, validation_data=(X_test, y_test), callbacks=callback)
+stop = datetime.now()
+ex_time = stop-start
+print("Execution time is: ", ex_time)
 
 # Evaluate the model
 loss, accuracy = model.evaluate(X_test, y_test)
