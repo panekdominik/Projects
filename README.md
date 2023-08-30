@@ -1,22 +1,15 @@
-# image_segmenttion_and_classification
-Image segmentation codes, including contouring, maksing, object finding, windowing, denoising etc. 
-Packages required for this code to work: **numpy, matplotlib.pyplot, seaborn, os, skimage, scipy**. 
+# Requirements
+Python version = 3.8.10
+Packages versions:
+tensorflow = 1.12.0
+numpy = 1.22.4
+pandas = 1.5.3
+matplotlib = 3.3.4
+keras = 2.13.1
+skimage = 0.18.1
 
-The first part of this code (still under development) takes as an input grayscale tomographic (micro-CT) images, and acts on them returning the contours, masked objects (organs and vessels), areas/volumes of the objects of interests etc. 
-The second part of this code (still under development) is supposed to take as an input masks (found in the first part), label them with integer numbers and use machine learning models (the ones with "fit", and "predict" methods) and tries to identify the objects visible at the tomographic images. 
+# Cell shape classification
+This directory contains functions intended for classification of cell shapes (if you want to know more please go to: ...). Main script is called cell_classification.py. It can be called in terminal with appropriate arguments (described within this file or you can simply type -h after calling the script.) It uses helpers.py script to create a data contained in separate folders. Data must be sotred in form of images showing cells. Then labels are loaded (labels describing states of the cells in a given image). Later traning and testing subsets are created and the training via convolutional neural network (CNN) is performed. You can modify number of convolutional blocks within CNN by using "blocks" argument while calling the main script. After training model is evaluated by model_summary.py script containing methods returning plots of training/testing accuracy, training/testing loss, classification report, confusion matrix (in form of heat map). If validation argument is set as true model runs through every file in data predicting its class and then returns list of IDs of images, which were misscalssified. 
 
-Functions used for segmentation:
-1) **image_show(image, nrows=1, ncols=1, cmap='gray', kwargs)** takes an image as an input and shows it in the grayscale 
-2) **window_image(image, window_center, window_width)** takes an image as an input and returns the windowed images (based on the window center and width)
-3) **remove_noise(image, window_center, window_width)** takes an image as an input and returns denised image (image withoud single pixel speckles)
-4) **contour_distance(contour)** takes a list of contours as an input and checks the Euclidian distance between the first and the last point of a given contour
-5) **set_is_closed(contour)** takes a list of contours and checks if the contour is closed (based on the information from the Euclidian distances)
-6) **find_object(contours, volume_size)** takes the countours and volume_size as arguments, and returns the contour of a given object (contour is found based on the volume (in 2D case area) of the object)
-7) **create_mask_from_polygon** takes as inputs image and countours, and returns the mask of the object (based on the contour) - binary array where 1 represent object and 0 the rest
-8) **create_vessel_mask(liver_mask, ct_numpy)** takes as inputs mask and an original image, it returns the mask for the objects which were not selected earlier by the contour.
-9) **segmentation(path, window_center=60, window_width=5, contour_lenght = 5, volume = 50000)** cumulative function collecting all the functions described above in one place. It takes as an argument path to the directory where the images are etc. It returns masked objects, masked vessels, and all contours. 
-
-Function sused for classification:
-1) ??
-2) ??
-3) ??
+# GAN image superresolution
+This directory contains functions dedicated for trainig generative adversarial neural network (GAN) in order to recreate high-resolution imaged based on low-resolution ones, having also original high-resolution images for validation purposes. In this case High-resolution (ground-truth) images are derrived from confocal microscopy and low-resolution are derrived from wide-filed fluorescence microscopy. Main script, which can be called with appropriate arguments (described in the file) within terminal is called train_GAN.py. First Program loads high- and low-resolution images, assigns appropriate weigths to the loss functions in generator (Binary cross-entropy, mean squared error and structural similarity index). Later, both discriminator (build as a simple CNN) and generator (build based on the U-NET architecture) are defined and the GAN is trained and the model is saved based on the metrics like MSE, NRMSE, SSIM, and PSNR. Best model can be later read-in via predictions.py script, which returns plots containig HR (ground truth), LR and generated samples, cross-section of the image along given pixel value and described earlier metrics.
