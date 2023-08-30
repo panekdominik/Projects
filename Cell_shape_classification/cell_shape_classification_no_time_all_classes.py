@@ -24,6 +24,7 @@ parser.add_argument("--learning_rate", "-LR", type=float, default=1e-5, help="St
 parser.add_argument("--model_save_path", "-MS", type=str, help="Path where the model will be saved.")
 parser.add_argument("--logger_save_path", "-LS", type=str, help="Path where model performance will be saved.")
 parser.add_argument("--cell_names", "-CN", type=str, default='Mesenchymal,Polygonal,Pseudopodial,Blebbing,Other', help="Name of the samples (given as delimited list).")
+parser.add_argument("--validation", "-V", type=bool, default=False, help="Default False. If true then ids of missclassified cells are returned")
 
 
 args = parser.parse_args()
@@ -37,6 +38,7 @@ lr = args.learning_rate
 save_path = args.model_save_path
 log_path = args.logger_save_path
 names = args.cell_names
+validation = args.validation
 
 # Set the path to the main directory containing the folders
 dirs = ['/Users/dominikpanek/Downloads/dataset/Seria 11/Komórki_seria11', 
@@ -71,3 +73,6 @@ model_evaluation(model=model, data=X_test, labels=y_test, n_classes=n_classes)
 
 names = [item for item in args.cell_names.split(',')]
 model_metrics(model=model, data=X_test, y_test=y_test, names=names)
+
+if validation == True:
+    model_validation(labels_path=labels_path, data=image_data, model=model, data_files=data_files)

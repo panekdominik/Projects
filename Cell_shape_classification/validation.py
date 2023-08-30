@@ -17,7 +17,7 @@ def model_validation(labels_path, data, model, data_files):
         if label != labels[id]:
             incorrect_preds.append(id)
     incorrect_preds=np.array(incorrect_preds)
-    print('Number of incorrect predictions:', len(incorrect_preds))
+    print('IDs of incorrect predictions:', incorrect_preds)
 
     id = np.random.choice(incorrect_preds)
     x = model.predict(np.expand_dims(data[id], axis=0), verbose=0)
