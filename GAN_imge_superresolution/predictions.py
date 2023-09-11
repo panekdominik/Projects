@@ -15,7 +15,7 @@ parser.add_argument("--saving_dir", type=str, help="Directory where the image wi
 parser.add_argument("--image_width", type=int, help="Width of the image")
 parser.add_argument("--image_height", type=int, help="Height of the image")
 parser.add_argument("--random", type=int, default=-1, help="If no integer is specified random image is taken if number is specified image with given id is taken")
-parser.add_argument("--model_path", type=str, help="Path to the model file (make super model is compatible with data)")
+parser.add_argument("--model_path", type=str, help="Path to the model file (make sure model is compatible with data)")
 parser.add_argument("--pixel_number", type=int, default=-1, help="Number indicating the slice in y direction across which the plot will be made")
 parser.add_argument("--tensorflow_data", type=str, default=None, help="Path to a tensorflow file sontaining losses saved during training.")
 parser.add_argument("--log", type=str, default=None, help="Name of the moels stored ine the tensorflow log. These names may be necessary to recover csv version of tensorflow file.")

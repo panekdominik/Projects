@@ -34,11 +34,11 @@ def plot_corss_section(hr_image, lr_image, model, saving_dir, pixel, random_samp
 
     generated = np.clip(model[0], a_min=0, a_max=1)
     fig, ax = plt.subplots(1, 3, figsize=(16, 5), sharey=True)
-    ax[0].plot(hr_image[0][:, 128, :])
+    ax[0].plot(hr_image[0][:, pixel, :])
     ax[0].set_title("High-resolution profile");
-    ax[1].plot(lr_image[0][:, 128, :])
+    ax[1].plot(lr_image[0][:, pixel, :])
     ax[1].set_title("Low-resolution profile")
-    ax[2].plot(generated[:, 128, :])
+    ax[2].plot(generated[:, pixel, :])
     ax[2].set_title("Network profile")
 
     ax[1].set_xlabel('Pixel number')
