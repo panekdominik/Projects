@@ -1,6 +1,6 @@
 from helpers import read_data_dir, img_reader, labels_reader
 from sklearn.model_selection import train_test_split
-from model import model, callbacks
+from model import callbacks, convolutional_model, recurrent_model
 from model_summary import model_performnace, model_evaluation, model_metrics
 from validation import model_validation
 import argparse
@@ -14,6 +14,7 @@ parser.add_argument("--image_width", "-W", type=int, help="Width of the image.")
 parser.add_argument("--image_height", "-H", type=int, help="Height of the image.")
 parser.add_argument("--channels", "-C", type=int, default=1, help="Number of channels in an image. Default 1.")
 parser.add_argument("--labels_path", "-LP", type=str, help="Path to the file containing labels.")
+parser.add_argument("--model", "-M", type=str, default="recurrent", help="Chose the type of model you want to use. You can choose either convolutional or recurrent.")
 parser.add_argument("--epochs", "-E", type=int, default=250, help="Number of iterations the model will run for. Default 250.")
 parser.add_argument("--batch_size", "-BS", type=int, default=8, help="Number of images in one batch. Default 8.")
 parser.add_argument("--learning_rate", "-LR", type=float, default=1e-5, help="Starting learning rate of learning. Default 1e-5.")
@@ -30,6 +31,7 @@ image_width = args.image_width
 image_height = args.image_height
 n_channels = args.channels
 labels_path = args.labels_path
+model_type = args.model
 n_epochs = args.epochs
 batch_size = args.batch_size
 lr = args.learning_rate
@@ -56,7 +58,11 @@ X_train, X_test, y_train, y_test = train_test_split(image_data, labels, test_siz
 print('Training shape:', X_train.shape, '\n','Testing shape:', X_test.shape)
 
 # defining model and callbacks
-model = model(image_width=image_width, image_height=image_height, n_channels=n_channels, kernel=(kernel_size, kernel_size), blocks=blocks, lr=lr)
+if model_type == 'recurrent':
+      model = convolutional_model(image_width=image_width, image_height=image_height, n_channels=n_channels, kernel=(kernel_size, kernel_size), blocks=blocks, lr=lr)
+else:
+     model = recurrent_model(image_width=image_width, image_height=image_height, n_channels=n_channels, lr=lr)
+
 callback = callbacks(model_save=save_path, performance_save=log_path)
 
 # train the model

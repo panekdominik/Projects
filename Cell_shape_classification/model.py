@@ -1,4 +1,5 @@
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, BatchNormalization, Dropout, Input
+from tensorflow.keras.layers import (Conv2D, MaxPooling2D, Flatten, Dense, TimeDistributed, SimpleRNN,
+                                     BatchNormalization, Dropout, Input, LSTM, GRU)
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.models import Model
 from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping, ModelCheckpoint, CSVLogger
@@ -15,7 +16,7 @@ def conv_block(input, filters, blocks, kernel=(3,3)):
 
     return conv
 
-def model(image_width, image_height, n_channels, filters=32, kernel=(3, 3), blocks=2, lr=1e-5):
+def convolutional_model(image_width, image_height, n_channels, filters=32, kernel=(3, 3), blocks=2, lr=1e-5, num_classes=3):
     
     # CNN model
     input_layer = Input(shape=(image_width, image_height, n_channels))
@@ -25,15 +26,38 @@ def model(image_width, image_height, n_channels, filters=32, kernel=(3, 3), bloc
     conv = conv_block(input=pool1, filters=filters, blocks=blocks)
 
     FC_layer = Flatten()(conv)
-    FC_layer = Dense(64, activation='relu')(FC_layer)
+    FC_layer = Dense(filters*2, activation='relu')(FC_layer)
     FC_layer = Dropout(0.5)(FC_layer)
-    output = Dense(5, activation='softmax')(FC_layer)
+    output = Dense(num_classes, activation='softmax')(FC_layer)
 
     model = Model(input_layer, output)
     opt = Adam(learning_rate=lr)
     model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
     return model
+
+def recurrent_model(seq_lenght, image_width, image_height, n_channels, num_classes=3, units=16, rnn_type='lstm', include_conv = False, lr = 1e-5):
+
+    inputs = Input(shape=(seq_lenght, image_width, image_height, n_channels))
+    if include_conv == True:
+        x = TimeDistributed(Conv2D(32, (3, 3), activation='relu'))(inputs)
+        x = TimeDistributed(Dropout(rate=0.25))(x)
+        x = TimeDistributed(Conv2D(64, (3, 3), activation='relu'))(x)
+        x = TimeDistributed(Flatten())(x)
+    x = TimeDistributed(Flatten())(inputs)
+    if rnn_type == 'lstm':
+        x = LSTM(units, return_sequences=True)(x)
+    elif rnn_type == 'gru':
+        x = GRU(units, return_sequences=True)(x)
+    elif rnn_type == 'simple_rnn':
+        x = SimpleRNN(units, return_sequences=True)(x)
+    x = Dense(num_classes, activation='softmax')(x)
+
+    model = Model(inputs, x)
+    opt = Adam(learning_rate=lr)
+    model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
+
+    return model 
 
 def callbacks(model_save, performance_save, patience=20):
 
