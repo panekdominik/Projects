@@ -1,7 +1,7 @@
 import glob 
 import os
 import numpy as np
-import imageio as io
+import cv2
 from skimage.transform import resize
 from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.utils import to_categorical
@@ -23,11 +23,11 @@ def img_reader(data_files, image_width, image_height, n_channels):
     
     image_data = []
     for chunk in data_files:
-        img = io.imread(chunk)
-        image = (img - np.min(img)) / (np.max(img) - np.min(img))
-        image = resize(image, (image_width, image_height, n_channels), preserve_range = True)
-        image_data.append(image)
-    image_data = np.array(image_data)
+        img = cv2.imread(chunk)
+        img = resize(img, (image_height, image_width, n_channels), preserve_range=True)
+        img = img/255
+        img = (img>0.5).astype(np.uint8)
+        image_data.append(img)
     
     return image_data
 
