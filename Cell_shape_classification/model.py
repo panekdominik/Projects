@@ -36,9 +36,9 @@ def convolutional_model(image_width, image_height, n_channels, filters=32, kerne
 
     return model
 
-def recurrent_model(seq_lenght, image_width, image_height, n_channels, num_classes=3, units=16, rnn_type='lstm', include_conv = False, lr = 1e-5):
+def recurrent_model(seq_length, image_width, image_height, n_channels, num_classes=3, units=16, rnn_type='lstm', include_conv = False, lr = 1e-5):
 
-    inputs = Input(shape=(seq_lenght, image_width, image_height, n_channels))
+    inputs = Input(shape=(seq_length, image_width, image_height, n_channels))
     if include_conv == True:
         x = TimeDistributed(Conv2D(32, (3, 3), activation='relu'))(inputs)
         x = TimeDistributed(Dropout(rate=0.25))(x)

@@ -22,7 +22,7 @@ parser.add_argument("--kernel_size", "-KS", type=int, default=3, help="Size of t
 parser.add_argument("--blocks", "-B", type=int, default=2, help="Number of convolutional blocks in the model. Default value is 2.")
 parser.add_argument("--model_save_path", "-MS", type=str, help="Path where the model will be saved.")
 parser.add_argument("--logger_save_path", "-LS", type=str, help="Path where model performance will be saved.")
-parser.add_argument("--cell_names", "-CN", type=str, default='Mesenchymal,Polygonal,Pseudopodial,Blebbing,Other', help="Name of the samples (given as delimited list). Default: Mesenchymal,Polygonal,Pseudopodial,Blebbing,Other")
+parser.add_argument("--cell_names", "-CN", type=str, default='Mesenchymal,Polygonal,Ameboidal', help="Name of the samples (given as delimited list). Default: Mesenchymal,Polygonal,Ameboidal")
 parser.add_argument("--validation", "-V", type=bool, default=False, help="Default False. If true then ids of missclassified cells are returned")
 
 
@@ -42,19 +42,15 @@ log_path = args.logger_save_path
 names = args.cell_names
 validation = args.validation
 
-# Set the path to the main directory containing the folders
-dirs = ['/Users/dominikpanek/Downloads/dataset/Seria 11/Komórki_seria11', 
-        '/Users/dominikpanek/Downloads/dataset/Seria 13/Komórki_seria13', 
-        '/Users/dominikpanek/Downloads/dataset/Seria 15/Komórki_seria15', 
-        '/Users/dominikpanek/Downloads/dataset/Seria 17/Komórki_seria17', 
-        '/Users/dominikpanek/Downloads/dataset/Seria 21/Komórki_seria21']
+# Set the paths to the main directory containing the folders
+dirs = []
 
 data_files = read_data_dir(dirs)
 image_data = img_reader(data_files=data_files, image_width=image_width, image_height=image_height, n_channels=n_channels)
 labels, n_classes = labels_reader(path=labels_path)
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(image_data, labels, test_size=0.3, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(image_data, labels, test_size=0.3, stratify=labels)
 print('Training shape:', X_train.shape, '\n','Testing shape:', X_test.shape)
 
 # defining model and callbacks
