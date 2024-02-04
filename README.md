@@ -1,13 +1,13 @@
 # Requirements
-*Python version = 3.8.10
-*Packages versions:
-*tensorflow = 2.13.0
-*numpy = 1.22.4
-*pandas = 1.5.3
-*matplotlib = 3.3.4
-*keras = 2.13.1
-*skimage = 0.18.1
-*cv2 = 4.5.5
+Python version = 3.8.10
+Packages versions:
+tensorflow = 2.13.0
+numpy = 1.22.4
+pandas = 1.5.3
+matplotlib = 3.3.4
+keras = 2.13.1
+skimage = 0.18.1
+cv2 = 4.5.5
 
 # Cell shape classification
 This directory contains functions intended for classification of cell shapes (if you want to know more please go to: ...). Main script is called cell_classification.py. It can be called in terminal with appropriate arguments (described within this file or you can simply type -h after calling the script.) It uses helpers.py script to create a data contained in separate folders. Data must be sotred in form of images showing cells. Then labels are loaded (labels describing states of the cells in a given image). Later traning and testing subsets are created and the training via recurrent or/and convolutional neural network (RNN and CNN respectively) is performed. You can modify number of convolutional blocks within CNN by using "blocks" argument while calling the main script or numer of units within different types of recurrent networks (Simple RNN, LSTM, GRU). You can also specify callbacks, which can adjust learing rate, early stopping or model checkpoint. After training model is evaluated by model_summary.py script containing methods returning plots of training/testing accuracy, training/testing loss, classification report, and confusion matrix (in form of a heat map). If validation argument is set as true model runs through every file in data predicting its class and then returns list of IDs of images, which were misscalssified. 
