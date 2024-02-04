@@ -2,6 +2,9 @@ import glob
 import os
 import numpy as np
 import cv2
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 from skimage.transform import resize
 from sklearn.preprocessing import LabelEncoder
 
@@ -72,3 +75,42 @@ def data_windowing(data, window_size = 3):
     windowed_data = np.array(input_data)
 
     return windowed_data
+
+def compute_counts(states, A, pi):
+    for state in states:
+        last_idx = None
+        for idx in state:
+            if last_idx is None:
+                pi[idx] += 1
+            else:
+                A[last_idx, idx] += 1
+            last_idx = idx
+
+def markov_transitions(labels, data_shape=(47, 161), ):
+
+    updated_cell_types = labels.rehsape(data_shape)
+    idx = 0
+    transitions = {}
+    for sequence in updated_cell_types:
+        for state in sequence:
+            if state not in transitions:
+                transitions[state] = idx
+                idx+=1
+    states_as_ints = []
+
+    for sequence in updated_cell_types:
+        seq2ints = [transitions[state] for state in sequence]
+        states_as_ints.append(seq2ints)
+
+    V = len(transitions)
+    A0 = np.ones((V, V))
+    pi0 = np.ones(V).astype(np.int64)
+
+    compute_counts(states_as_ints, A0, pi0)
+    data = pd.DataFrame(A0, columns=np.unique(updated_cell_types), index=np.unique(updated_cell_types))
+
+    sns.heatmap(data, cmap='viridis', annot=True)
+    plt.tight_layout()
+    plt.savefig('markov_chain_heatmap.png', dpi=600, transparent=True)
+    
+    return A0, pi0
